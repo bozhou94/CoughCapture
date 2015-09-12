@@ -1,6 +1,8 @@
 # CoughCapture
 
 To compile, run: 
-	gcc -o capture main.c libportaudio.a -lrt -lasound -lpthread -lm
+	On Linux: gcc -o capture main.c libportaudio.a -lrt -lasound -lpthread -lm
+	On Windows (MSYS Shell): gcc -o capture main.c libportaudio.dll.a
 Then to run the file, execute:
-	./capture
+	On Linux: ./capture
+	On Windows: ./capture.exe

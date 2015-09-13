@@ -1,0 +1,11 @@
+--- HTKTools/Makefile	2011-10-31 10:07:14.655375000 +0100
++++ HTKTools/Makefile_new	2011-10-31 10:00:57.108500000 +0100
+@@ -45,7 +45,7 @@
+ CFLAGS  = 	-ansi -DCYGWIN -D'ARCH="ASCII"' -Wall -Wno-switch -g -O2 -I$(inc) -DPHNALG
+ LDFLAGS = 	-L/usr/X11R6/lib  -lm
+ INSTALL = 	/usr/bin/install -c
+-PROGS   = 	HSLab HBuild HCompV HCopy HDMan \
++PROGS   = 	HBuild HCompV HCopy HDMan \
+ 		HERest HHEd HInit HLEd 	HList \
+ 		HLRescore HLStats HMMIRest HParse \
+ 		HQuant HRest HResults HSGen HSmooth \

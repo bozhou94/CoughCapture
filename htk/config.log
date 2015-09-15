@@ -691,7 +691,7 @@ configure:5148: $? = 0
 configure:5166: result: yes
 configure:5173: checking for _doprnt
 configure:5229: gcc -o conftest.exe -g -O2   conftest.c -lm  >&5
-C:\Users\Bobby\AppData\Local\Temp\cccrjN9P.o: In function `main':
+C:\Users\Bobby\AppData\Local\Temp\ccEJw0jj.o: In function `main':
 c:\Users\Bobby\OneDrive\Documents\GitHub\CoughCapture\htk/conftest.c:68: undefined reference to `_doprnt'
 collect2.exe: error: ld returned 1 exit status
 configure:5235: $? = 1
@@ -809,7 +809,7 @@ configure:5345: $? = 0
 configure:5363: result: yes
 configure:5283: checking for socket
 configure:5339: gcc -o conftest.exe -g -O2   conftest.c -lm  >&5
-C:\Users\Bobby\AppData\Local\Temp\ccgZB8bZ.o: In function `main':
+C:\Users\Bobby\AppData\Local\Temp\ccQ9SrSF.o: In function `main':
 c:\Users\Bobby\OneDrive\Documents\GitHub\CoughCapture\htk/conftest.c:74: undefined reference to `socket'
 collect2.exe: error: ld returned 1 exit status
 configure:5345: $? = 1
@@ -942,7 +942,7 @@ configure:5381: checking build system type
 configure:5399: result: i686-pc-mingw32
 configure:5421: checking host system type
 configure:5436: result: i686-pc-mingw32
-configure:5732: creating ./config.status
+configure:5728: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##

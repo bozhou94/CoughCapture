@@ -1,37 +1,37 @@
 # CoughCapture
 
-## Linux
-First, install PortAudio on your machine
+## Installing PortAudio (Linux or Windows MinGW)
 ```
 cd portaudio
 ./configure
 make
 make install
-```
-Next, compile the main file 
-```
-cd ..
-gcc -o capture main.c libportaudio.a -lrt -lasound -lpthread -lm
-```
-Finally, execute the binary
-```
-./capture
 ```
 
-## Windows (MinGW)
-First, execute the MSYS shell. In it, install PortAudio
+## Installing HTK 
+For Windows users, after calling `./configure` go to `HTKTools/Makefile` and remove the `-lX11`
 ```
-cd portaudio
+cd htk
 ./configure
-make
+make all
 make install
 ```
-Next, compile the main file
+
+## Compilation and Running
+
+### Linux
+From the project root, execute the following:
 ```
-cd ..
+cp portaudio/include/portaudio.h .
+cp portaudio/lib/.libs/libportaudio.a
+gcc -o capture main.c libportaudio.a -lrt -lasound -lpthread -lm
+./capture
+```
+### Windows (MinGW)
+From the project root, execute the following:
+```
+cp portaudio/include/portaudio.h .
+cp portaudio/lib/.libs/libportaudio.dll.a
 gcc -o capture main.c libportaudio.dll.a
-```
-Finally, execute the binary
-```
 ./capture.exe
 ```

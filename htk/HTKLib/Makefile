@@ -46,7 +46,7 @@ CFLAGS := $(CFLAGS) -Wall -Wno-switch -g -O2 -I. -DPHNALG
 RANLIB = ranlib
 INSTALL= /bin/install -c
 target = HTKLib.a
-objects = HGraf.null.o esig_asc.o \
+objects = HGraf.o esig_asc.o \
 	esig_edr.o \
 	esignal.o \
 	esig_nat.o \
@@ -75,7 +75,7 @@ objects = HGraf.null.o esig_asc.o \
 	HWave.o \
 	strarr.o 
 
-lvobjects = $(basename HGraf.null.o).lv.o esig_asc.lv.o \
+lvobjects = $(basename HGraf.o).lv.o esig_asc.lv.o \
 	esig_edr.lv.o \
 	esignal.lv.o \
 	esig_nat.lv.o \

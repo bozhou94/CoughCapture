@@ -39,8 +39,6 @@ static int captureCallback(
 			printf("[DEBUG] Float is %f\n", *inData++);
 		}
 	}
-
-	looping = FAILURE;
 	return paContinue;
 }
 

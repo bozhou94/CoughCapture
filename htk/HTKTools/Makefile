@@ -55,7 +55,7 @@ all: $(PROGS)
 %: %.c $(HTKLIB) 
 	if [ ! -d $(bindir) -a X_ = X_yes ] ; then mkdir -p $(bindir) ; fi
 	if [ x$@ = xHSLab ] ; then \
-		$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lX11 ; \
+		$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) ; \
 		else \
 		$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) ; fi
 	if [ X_ = X_yes ] ; then $(INSTALL) -m 755 $@ $(bindir)  ; fi

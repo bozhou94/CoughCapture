@@ -1,6 +1,8 @@
 htk/**/*.o
 htk/**/*.exe
 htk/**/*.a
+htk/config.log
+htk/config.status
 portaudio.h
 libportaudio.a
 libportaudio.dll.a

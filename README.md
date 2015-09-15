@@ -9,7 +9,7 @@ make install
 ```
 
 ## Installing HTK 
-For Windows MinGW users, go to `htk/HTKLib/esignal.c` and replace all instances of `ARCH` with `darwin`.
+For Windows MinGW users, go to `htk/HTKLib/esignal.c` and replace all instances of `ARCH` with `"darwin"`.
 
 Additionally, after calling `./configure` go to `HTKTools/Makefile` and remove the `-lX11`
 ```

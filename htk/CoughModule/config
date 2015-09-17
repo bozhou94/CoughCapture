@@ -1,12 +1,13 @@
 # Coding parameters
-TARGETKIND = MFCC_0_D_A
-TARGETRATE = 100000.0
+SOURCEFORMAT = WAV # We read in .wav files
+TARGETKIND = MFCC_0_D_A # Identifier for coefficients
+TARGETRATE = 100000.0 # 10ms = frame periodicity
 SAVECOMPRESSED = T
 SAVEWITHCRC = T
-WINDOWSIZE = 250000.0
-USEHAMMING = T
-PREEMCOEF = 0.97
-NUMCHANS = 26
-CEPLIFTER = 22
-NUMCEPS = 12
-ENORMALISE = F
+WINDOWSIZE = 250000.0 # 25ms = time frame length
+USEHAMMING = T # Use of Hamming function for windowing
+PREEMCOEF = 0.97 # Pre-emphasis coefficient
+NUMCHANS = 26 # Number of filterbank channels
+CEPLIFTER = 22 # Length of cepstral filtering
+NUMCEPS = 12 # Number of MFCC coefficients
+ENORMALISE = F # Normalise intensity of data

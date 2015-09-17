@@ -1,8 +1,4 @@
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough1.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough1.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough2.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough2.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough3.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough3.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough4.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/cough4.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence1.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence1.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence2.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence2.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence3.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence3.mfc
-/c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence4.wav /c/Users/Bobby/OneDrive/Documents/GitHub/CoughCapture/htk/HTKCough/samples/silence4.mfc
+samples/cough1.wav samples/cough1.mfc
+samples/cough2.wav samples/cough2.mfc
+samples/cough3.wav samples/cough3.mfc
+samples/cough4.wav samples/cough4.mfc

@@ -1,14 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 #include <string.h>
+#include <math.h>
 #include <time.h>
 
 #include "portaudio.h"
 
 #define SAMPLE_RATE 44100
-#define NUM_CHANNELS 1
-#define BUFFER_LENGTH 256
 #define SUCCESS 1
 #define FAILURE 0
 
@@ -21,35 +19,30 @@ int looping; // Boolean to dictate whether or not we should contiue looping
 time_t lastCheckpoint;
 int sampleNumber;
 FILE* dataFile; // holds the data accumulated until now
-// FILE* gnuplotPipe; // Pipes commands to gnuplot
+FILE* gnuplotPipe; // Pipes commands to gnuplot
+
+char* getNextFileName();
+void writeFrameData(const void* frame, unsigned long frameLength);
 
 /**
  * Callback function for the stream
  */
-static int captureCallback(const void *inputBuffer, void *outputBuffer,
-			   unsigned long framesPerBuffer,
-			   const PaStreamCallbackTimeInfo* timeInfo,
-			   PaStreamCallbackFlags statusFlags,
-			   void *userData) {
+static int captureCallback( const void *inputBuffer, void *outputBuffer,
+			    unsigned long framesPerBuffer,
+			    const PaStreamCallbackTimeInfo* timeInfo,
+			    PaStreamCallbackFlags statusFlags,
+			    void *userData) {
   
   // Received no input, just ignore
   if (inputBuffer == NULL) {
     return paContinue;
   }
+
+  // Create new file if necessary
   
-  // Loop through the input to obtain samples
-  float* inData = (float*) inputBuffer;
+  // Write data
+  // writeFrameData(inputBuffer, framesPerBuffer);
   
-  int index;
-  for (index = 0; index < framesPerBuffer; index++) {
-    if (inData == NULL) {
-      break;
-    } else {
-      float entry = *inData++;
-      fwrite(&entry,1,sizeof(entry),dataFile);
-      // printf("[DEBUG] Float is %f\n", entry);
-    }
-  }
   return paContinue;
 }
 
@@ -64,11 +57,11 @@ int initCapture() {
   };
   
   err = Pa_OpenDefaultStream( &stream,
-			      NUM_CHANNELS, // stereo input
-			      NUM_CHANNELS, // stereo output
+			      1, // stereo input
+			      1, // stereo output
 			      paFloat32, // 32 bit floating point output
 			      SAMPLE_RATE,
-			      BUFFER_LENGTH, // frames per buffer
+			      256, // frames per buffer
 			      captureCallback,
 			      NULL ); // pointer that will be passed to your callback
   
@@ -116,6 +109,36 @@ int killCapture() {
   return SUCCESS;
 }
 
+
+/**
+ * Writes the frame data to the current data file
+ */
+void writeFrameData(const void* frame, unsigned long frameLength) {
+  
+  float* frameData = (float*) frame;
+  int index;
+  for (index = 0; index < frameLength; index++) {
+    if (frameData == NULL) {
+      break;
+    } else { // Write entry to dataFile
+      float entry = *frameData++;
+      fwrite(&entry,1,sizeof(entry),dataFile);
+      //sum += entry * entry;
+      printf("[DEBUG] Entry is %f\n", entry);
+    }
+  }
+  
+  //float rms = sum / sqrt(index);
+  //printf("[DEBUG] RMS is %f\n", rms);
+  
+  // Update gnuplot graph
+  //fprintf(dataFile, "%d %f \n", sampleNumber++, rms);
+  //fprintf(gnuplotPipe, "%s \n", "set title \"Audio Input\"");
+  //fprintf(gnuplotPipe, "%s \n", "plot 'data.wav' with lines");
+  //fflush(gnuplotPipe);
+  
+}
+
 /**
  * Obtains the next file name based on the set checkpoint
  */
@@ -138,25 +161,28 @@ char* getNextFileName() {
 }
 
 int main() {
+  
   // Initialize structures
   time(&lastCheckpoint);
+  printf("%s\n",getNextFileName());
   dataFile = fopen(getNextFileName(), "wb");
   // gnuplotPipe = popen("gnuplot -persistent", "w");	
   // sampleNumber = 0;
-
+  
   // Initialize and start the capture
   if (initCapture()) {
     if (startCapture()) {
       
       // Looping the capture
       looping = SUCCESS;
-      while (looping) {}
-      
-      // Stop and kill the capture
-      if (stopCapture()) {
-	if (killCapture()) {
-	  printf("[INFO] Capture Finished\n");
-	  return SUCCESS;
+      while (looping) {
+	
+	// Stop and kill the capture
+	if (stopCapture()) {
+	  if (killCapture()) {
+	    printf("[INFO] Capture Finished\n");
+	    return SUCCESS;
+	  }
 	}
       }
     }

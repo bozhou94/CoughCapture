@@ -3,6 +3,8 @@ htk/**/*.exe
 htk/**/*.a
 htk/config.log
 htk/config.status
+portaudio
+portaudio/*
 portaudio.h
 libportaudio.a
 libportaudio.dll.a

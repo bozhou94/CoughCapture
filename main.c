@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 
+#include <fftw.h>
 #include "portaudio.h"
 
 // Audio capture parameters
@@ -26,6 +27,11 @@ typedef struct {
 time_t lastCheckpoint, newCheckpoint;
 FILE* dataFile; // holds the data accumulated until now
 FILE* nextFile;
+
+// Plotting parameters
+unsigned int sampleNumber;
+FILE* rmsPlotFile; // holds the rms data for plotting
+FILE* gnuplotPipe;
 
 // Flow control
 #define SUCCESS 1
@@ -62,16 +68,25 @@ static int captureCallback(const void *inputBuffer, void *outputBuffer,
   // Loop through the input to obtain samples
   float* inData = (float*) inputBuffer;
   
+  double rms = 0;
   int index;
   for (index = 0; index < framesPerBuffer; index++) {
     if (inData == NULL) {
       break;
     } else {
       float entry = *inData++;
+	  rms += entry * entry;
       fwrite(&entry,1,sizeof(entry),dataFile);
       // printf("[DEBUG] Float is %f\n", entry);
     }
   }
+  rms = sqrt(rms / index);
+  
+  // Write data and graph
+  fprintf(rmsPlotFile, "%u %f \n", sampleNumber++, rms);
+  fprintf(gnuplotPipe, "set title \"Audio RMS\" \n");
+  fprintf(gnuplotPipe, "plot 'rmsData.temp'");
+  
   return paContinue;
 }
 
@@ -181,6 +196,10 @@ char* getNextFileName() {
 int main() {
 
   // Initialize structures
+  sampleNumber = 0;
+  rmsPlotFile = fopen("rmsData.temp", "w");
+  gnuplotPipe = popen("gnuplot -persistent", "w");
+  
   time(&lastCheckpoint);
   dataFile = fopen(getNextFileName(), "wb");
   err = paNoError;

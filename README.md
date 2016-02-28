@@ -3,12 +3,16 @@
 ## Installing PortAudio (Linux or Windows MinGW)
 
 Download at http://www.portaudio.com/download.html
-
+First install the ALSA dev library
 ```
 sudo apt-get install libasound-dev
+```
+
+Then place the extracted portaudio directory into the project root and do the following:
+```
 cd portaudio
 ./configure
-make
+make all
 make install
 ```
 

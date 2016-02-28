@@ -34,7 +34,7 @@ From the project root, execute the following:
 ```
 cp portaudio/include/portaudio.h .
 cp portaudio/lib/.libs/libportaudio.a
-gcc -o capture main.c libportaudio.a -lrt -lasound -lpthread -lm
+gcc -o capture capture_lite.c libportaudio.a -lrt -lasound -lpthread -lm
 ./capture
 ```
 ### Windows (MinGW)
@@ -42,6 +42,6 @@ From the project root, execute the following:
 ```
 cp portaudio/include/portaudio.h .
 cp portaudio/lib/.libs/libportaudio.dll.a
-gcc -o capture main.c libportaudio.dll.a
+gcc -o capture capture_lite.c libportaudio.dll.a
 ./capture.exe
 ```

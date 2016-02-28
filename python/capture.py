@@ -1,0 +1,1 @@
+# Captures audio using ALSA library using single-channel 44100 Hz

@@ -1,7 +1,11 @@
 # CoughCapture
 
 ## Installing PortAudio (Linux or Windows MinGW)
+
+Download at http://www.portaudio.com/download.html
+
 ```
+sudo apt-get install libasound-dev
 cd portaudio
 ./configure
 make

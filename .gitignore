@@ -10,3 +10,5 @@ libportaudio.a
 libportaudio.dll.a
 capture.exe
 capture
+*.pyc
+python/features/__pycache__/*

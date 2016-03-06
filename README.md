@@ -53,5 +53,20 @@ gcc -o capture capture_lite.c libportaudio.dll.a
 
 To run classification from the captured data run:
 ```
-./classify | python3.5 python/classify.py
+./classify | python3.5 python/classify.py <output>
 ```
+This will record data and output to the file in CSV format.
+
+## Training
+
+To obtain raw training samples run in terminal:
+```
+arecord -f cd -D plughw:1,0 <path>.wav
+```
+This will record audio from the device at plughw:1,0 at 16 bits, 44100Hz and put it into a wav file at <path>.wav. You can exit the recording by pressing Ctrl-C.
+
+To extract features from the collected audio, run:
+```
+python3.5 python/extract_features.py <input>
+```
+where the input is the collected audio data.

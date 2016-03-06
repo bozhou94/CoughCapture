@@ -12,3 +12,5 @@ capture.exe
 capture
 *.pyc
 python/features/__pycache__/*
+*.csv
+*.wav

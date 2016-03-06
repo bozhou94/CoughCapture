@@ -33,7 +33,10 @@ if __name__ == '__main__':
         counter2 = int(-FRAME_SIZE / 2) # Current index of frame 2
 
         # CSV File holding MFCCs
-        csv= open(FILE_LOCATION,'w')
+        if len(sys.argv) > 1:
+                csv= open(str(sys.argv[1]),'w')
+        else:
+                csv= open(FILE_LOCATION, 'w')
 
         # Read signal value
         for line in sys.stdin:

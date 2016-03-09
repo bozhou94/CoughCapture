@@ -65,8 +65,11 @@ arecord -f cd -D plughw:1,0 <path>.wav
 ```
 This will record audio from the device at plughw:1,0 at 16 bits, 44100Hz and put it into a wav file at <path>.wav. You can exit the recording by pressing Ctrl-C.
 
-To extract features from the collected audio, run:
+To annotate the recorded audio, use [Praat](http://www.fon.hum.uva.nl/praat/). Note that areas that are coughs should be annotated as 'Cough'.
+
+Before running the feature extraction, you'll need the [TextGrid parser package](https://github.com/kylebgorman/textgrid).
+
+Finally, to extract features from the collected audio, run:
 ```
-python3.5 python/extract_features.py <input>
+python3.5 python/extract_features.py <wav file> <TextGrid file> <output file>
 ```
-where the input is the collected audio data.

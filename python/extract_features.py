@@ -7,6 +7,7 @@ import scipy.io.wavfile as wav
 from features import mfcc
 import textgrid as tg
 
+NUM_CEPTRUM        = 13 # Number of ceptrum used in mfcc
 SAMPLING_RATE      = 44100 # 44100 Hz capture
 LO_FRAME_DURATION  = 0.032 # 32ms length frames for low-level feature extraction
 LO_FRAME_STEP      = 0.016 # 16ms steps for LLFE
@@ -26,6 +27,7 @@ def extractLow(signal):
                     samplerate = SAMPLING_RATE,
                     winlen = LO_FRAME_DURATION,
                     winstep = LO_FRAME_STEP,
+                    numcep = NUM_CEPTRUM,
                     appendEnergy = True)
 
 # Creates the annotation array for the low-level features
@@ -51,7 +53,8 @@ def annotate(low_feat, fileName):
         return annotations
 
 # Calculates the high level features via mean and std
-def extractHigh(low_feat, annotations):
+# If no annotations, then we create a feature set with no labels
+def extractHigh(low_feat, annotations=None):
         num_rows = low_feat.shape[0]
         num_high_feat_rows = num_rows 
         # Not enough rows for high level features
@@ -59,20 +62,26 @@ def extractHigh(low_feat, annotations):
                 return np.array([])
         # Otherwise, examine section by section
         else:
-                high_feat = extractHighRow(low_feat, annotations, 0, HI_FRAME_SIZE)
-                for start in range(HI_STEP_SIZE, num_rows, HI_STEP_SIZE):
-                        row = extractHighRow(low_feat, annotations, start, start + min(num_rows,HI_FRAME_SIZE))
-                        high_feat = np.vstack([high_feat, row])
+                high_feat = extractHighRow(low_feat, 0, HI_FRAME_SIZE, annotations)
+                if annotations is not None: # If we're testing, then we're feature extracting on the fly so no subsequent frames
+                        for start in range(HI_STEP_SIZE, num_rows, HI_STEP_SIZE):
+                                row = extractHighRow(low_feat, start, start + min(num_rows,HI_FRAME_SIZE), annotations)
+                                high_feat = np.vstack([high_feat, row])
                 return high_feat
 
 # Calculates a row of high level features from a start (inclusive) to an end (exclusive) row in the low level features
-def extractHighRow(low_feat, annotations, start, end):
+def extractHighRow(low_feat, start, end, annotations=None):
         num_cols = low_feat.shape[1]
-        row = np.zeros(2 * num_cols + 1)
+        num_feats = 2 * num_cols
+        # Add one column for labels if we're training
+        if annotations is not None:
+                num_feats += 1 
+        row = np.zeros(num_feats)
         for col in range(0,num_cols):
                 row[2 * col] = columnMean(low_feat, start, end, col)
                 row[2 * col + 1] = columnStd(low_feat, start, end, col)
-        row[2 * num_cols] = label(annotations, start, end)
+        if annotations is not None:
+                row[2 * num_cols] = label(annotations, start, end)
         return row
 
 ### HIGH LEVEL FEATURE EXTRACTION FUNCTIONS ###
@@ -114,7 +123,9 @@ if __name__ == '__main__':
         output = ""
         for row in range(0, high_feat.shape[0]):
                 for col in range(0, high_feat.shape[1]):
-                        output += str(high_feat[row, col]) + ","
+                        output += str(high_feat[row, col])
+                        if col < high_feat.shape[1] - 1:
+                                output += ","
                 output += "\n"
         csv.write(output)
         csv.close()

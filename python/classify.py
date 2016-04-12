@@ -5,58 +5,95 @@ import sys
 import numpy as np
 import time
 import os
+import extract_features as ef
 from features import mfcc
+from sklearn.externals import joblib
 
-SAMPLING_RATE = 44100 # 44100 Hz capture
-FRAME_DURATION = 0.032 # 32ms length frames
-FRAME_SIZE = int(SAMPLING_RATE * FRAME_DURATION) # Samples in one frame
-
-FILE_LOCATION = "mfccs.csv"
-
-# Writes the MFCC for a frame to a csv file
-def writeMfcc(frame, csv):
-        mfcc_feat = mfcc(frame, samplerate=SAMPLING_RATE, winlen=FRAME_DURATION,appendEnergy=True)
-        row = ""
-        for index in range(0,12):
-                row += str(mfcc_feat[0,index]) + ", "
-        row += "\n"
+# Predicts and writes to file the classification of a window of
+# low feature frames
+def predictAndWrite(low_feat, model, csv):
+        high_feat = ef.extractHigh(low_feat)
+        # Reshape to 2D and predict
+        high_feat = np.array(high_feat).reshape(1, len(high_feat))
+        label = model.predict(high_feat)
+        row = str(label[0]) + "\n"
         print(row)
         csv.write(row)
         csv.flush()
         os.fsync(csv)
 
 if __name__ == '__main__':
-        time.sleep(1)
-        frame1 = np.zeros(FRAME_SIZE) # First frame
-        frame2 = np.zeros(FRAME_SIZE) # Second starting from half-point of first frame
-        counter1 = 0 # Current index of frame 1
-        counter2 = int(-FRAME_SIZE / 2) # Current index of frame 2
 
-        # CSV File holding MFCCs
-        if len(sys.argv) > 1:
-                csv= open(str(sys.argv[1]),'w')
-        else:
-                csv= open(FILE_LOCATION, 'w')
+        # Load trained model from file
+        model = joblib.load(sys.argv[1])
+        # CSV holding classifications
+        csv= open(str(sys.argv[2]),'w')
+        # Sleep for a bit to let capture start up
+        time.sleep(1)
+
+        # Raw signal frames switching every half frame and indices
+        sig_frame1 = np.zeros(ef.LO_FRAME_SIZE)
+        sig_frame2 = np.zeros(ef.LO_FRAME_SIZE)
+        sig_counter1 = 0
+        sig_counter2 = int(-ef.LO_FRAME_SIZE / 2)
+
+        # Low feature frames switching every half frame and indices
+        low_feat1 = np.zeros((ef.HI_FRAME_SIZE, ef.NUM_CEPTRUM))
+        low_feat2 = np.zeros((ef.HI_FRAME_SIZE, ef.NUM_CEPTRUM))
+        low_counter1 = 0
+        low_counter2 = -ef.HI_STEP_SIZE
 
         # Read signal value
         for line in sys.stdin:
                 try:
                         value = float(line)
-                        # Place signal value into frame 1
-                        frame1[counter1] = value
-                        # Place signal value into frame 2
-                        if counter2 >= 0:
-                                frame2[counter2] = value
-                        # Reached end of frame, classify, output and restart
-                        if counter1 == FRAME_SIZE - 1:
-                                writeMfcc(frame1, csv)
-                                counter1 = 0
+                        # Place signal value into signal frames
+                        sig_frame1[sig_counter1] = value
+                        if sig_counter2 >= 0:
+                                sig_frame2[sig_counter2] = value
+                        # Reached end of frame, extract and restart
+                        if sig_counter1 == ef.LO_FRAME_SIZE - 1:
+                                # Calculate mfcc and put it in low frame
+                                low_row = ef.extractLow(sig_frame1)
+                                low_feat1[low_counter1] = low_row
+                                if low_counter2 >= 0:
+                                        low_feat2[low_counter2] = low_row
+                                # Reached end of low features, extract and restart
+                                if low_counter1 == ef.HI_FRAME_SIZE - 1:
+                                        predictAndWrite(low_feat1, model, csv)
+                                        low_counter1 = 0
+                                else:
+                                        low_counter1 += 1
+                                if low_counter2 == ef.HI_FRAME_SIZE - 1:
+                                        predictAndWrite(low_feat2, model, csv)
+                                        low_counter2 = 0
+                                else:
+                                        low_counter2 += 1
+                                        
+                                sig_counter1 = 0
                         else:
-                                counter1 += 1
-                        if counter2 == FRAME_SIZE - 1:
-                                writeMfcc(frame2, csv)
-                                counter2 = 0
+                                sig_counter1 += 1
+                                
+                        if sig_counter2 == ef.LO_FRAME_SIZE - 1:
+                                # Calculate mfcc and put it in low frame
+                                low_row = ef.extractLow(sig_frame2)
+                                low_feat1[low_counter1] = low_row
+                                if low_counter2 >= 0:
+                                        low_feat2[low_counter2] = low_row
+                                # Reached end of low features, extract and restart
+                                if low_counter1 == ef.HI_FRAME_SIZE - 1:
+                                        predictAndWrite(low_feat1, model, csv)
+                                        low_counter1 = 0
+                                else:
+                                        low_counter1 += 1
+                                if low_counter2 == ef.HI_FRAME_SIZE - 1:
+                                        predictAndWrite(low_feat2, model, csv)
+                                        low_counter2 = 0
+                                else:
+                                        low_counter2 += 1
+
+                                sig_counter2 = 0
                         else:
-                                counter2 += 1
+                                sig_counter2 += 1
                 except ValueError:
                         print("Reading strings")

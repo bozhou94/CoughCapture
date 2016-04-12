@@ -20,11 +20,12 @@ make install
 
 Note that the classification part of the project runs on Python 3.5. Directions on how to get this version for Raspbian can be found [here](http://bohdan-danishevsky.blogspot.com/2015/10/building-python-35-on-raspberry-pi-2.html).
 
-The project also requires numpy and scipy, which can be installed as follows
+The project also requires numpy, scipy, and scikit-learn which can be installed as follows
 
 ```
 sudo pip3.5 install numpy
 sudo pip3.5 install scipy
+sudo pip3.5 install -U scikit-learn
 ```
 
 For Windows, an alternative that comes with everything is [Anaconda](https://www.continuum.io/downloads)
@@ -49,14 +50,6 @@ gcc -o capture capture_lite.c libportaudio.dll.a
 ./capture.exe
 ```
 
-## Running Classification
-
-To run classification from the captured data run:
-```
-./classify | python3.5 python/classify.py <output>
-```
-This will record data and output to the file in CSV format.
-
 ## Training
 
 To obtain raw training samples run in terminal:
@@ -69,7 +62,20 @@ To annotate the recorded audio, use [Praat](http://www.fon.hum.uva.nl/praat/). N
 
 Before running the feature extraction, you'll need the [TextGrid parser package](https://github.com/kylebgorman/textgrid).
 
-Finally, to extract features from the collected audio, run:
+To extract features from the collected audio, run:
 ```
 python3.5 python/extract_features.py <wav file> <TextGrid file> <output file>
 ```
+
+Finally, to fit the collected data to a model and save it, run:
+```
+python3.5 python/fit.py <features file> <output pkl file>
+```
+
+## Running Classification
+
+To run classification from the captured data run:
+```
+./capture | python3.5 python/classify.py <model pkl file> <output>
+```
+This will classify data as it comes in and output to the file in CSV format.
